@@ -3,9 +3,14 @@ import Navbar from '@/components/shared/navbar'
 import HomePage from '@/pages/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
-import { Outlet } from 'react-router'
+import { Outlet, useLocation } from 'react-router'
+import useScrool from './hooks/useScrool'
 
 function App() {
+
+  useScrool()
+
+
   return (
     <>
       <div className='flex flex-col min-h-svh'>
