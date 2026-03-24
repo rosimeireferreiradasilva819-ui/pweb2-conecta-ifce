@@ -1,16 +1,16 @@
 import { optional, z } from 'zod';
 
 export const registerSchema = z.object({
-  fisrtName:z
+  firstName:z
     .string()
     .trim()
     .min(2, 'O nome deve conter no mínimo 2 caracteres'),
   lastName:z.string().min(2, 'Sobrenome muito curto').optional(),
   email:z
     .email('Email inválido ')
-    .endsWith('@ifce.edu.br', 'Use seub email institucional').optional(),
+    .endsWith('@ifce.edu.br', 'Use seu email institucional').optional(),
   role:z.enum(['student', 'professor', 'technician']).optional(),
-  campus:z.enum(['taua', 'boa_viagem', 'fortaeleza', ]).optional(),
+  campus:z.enum(['Tauá', 'Boa Viagem', 'Fortaleza', ]).optional(),
   password:z
     .string()
     .min(8, 'Minimo 8 caracteres')
