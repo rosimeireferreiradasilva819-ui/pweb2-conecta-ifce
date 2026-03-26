@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { Eye, EyeOff } from 'lucide-react'
+import { Eye, EyeOff, Loader2Icon } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
@@ -16,6 +16,7 @@ import { set, ZodError } from 'zod'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import type { RegisterFormData } from '@/schemas/register.schema'
+import { useNavigate } from 'react-router'
 
 
 function RegisterPage() {
@@ -27,7 +28,7 @@ function RegisterPage() {
 
   useEffect(() => {
     async function fetchCampuses() {
-      const response = await fetch('https://conectaifce-api.proflucasmendes.com.br/campuses')
+      const response = await fetch('https://conectaifce-api.proflucasmendes.com.br/campuses',)
 
       if (response.ok){
         const data = await response.json()
@@ -36,6 +37,7 @@ function RegisterPage() {
     }
     fetchCampuses()
   }, [])
+  const navigate = useNavigate()
 
   const {
     register,
@@ -43,21 +45,32 @@ function RegisterPage() {
     reset,
     control,
     formState: {errors, isSubmitting,isValid},
+    watch
   }= useForm<RegisterFormData>({
     resolver: zodResolver(registerSchema),
     mode: 'onBlur'
   })
 
   const onSubmit = async (data: RegisterFormData) => {
-    console.log('Enviando...', data)
+    const{ course, ...rest} =data
+    const payload = data.role === 'student' ? data : rest
 
-    await new Promise (resolve => setTimeout(resolve, 2000))
+    const response = await fetch('https://conectaifce-api.proflucasmendes.com.br/auth/register',{
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(payload)
+    })
 
-    console.log('Usuário cadastrado.')
-    reset()
-  }
+    if (response.ok){
+      const responseData = await response.json()
+      console.log(responseData)
+      localStorage.setItem('acess_token',responseData.token)
+      navigate("/feed")
+    }
 
-
+    }
 
     return (
 
@@ -197,7 +210,8 @@ function RegisterPage() {
                 {errors.campus.message}
               </p>}
         </div>
-            <div className="flex flex-col gap-2 flex-1">
+        { watch('role') === 'student' && (
+          <div className="flex flex-col gap-2 flex-1">
                 <Label htmlFor="course">Curso</Label>
                 <Input
                 id="course"
@@ -212,6 +226,8 @@ function RegisterPage() {
                   {errors.course.message}
                 </p>}
             </div>
+
+        )}
 
             <div className="flex flex-col gap-2">
               <Label htmlFor="password">Senha</Label>
@@ -244,7 +260,15 @@ function RegisterPage() {
               </p>
             </div>
 
-            <Button type="submit" className="h-11 mt-2">Criar conta</Button>
+            <Button type="submit" className="h-11 mt-2" disabled={isSubmitting || !isValid}>
+              {
+                isSubmitting ?(
+                  <span className='flex items-center gap-4'>
+                    <Loader2Icon className='size-4 animate' /> <span> Criando Conta...</span>
+                    </span>
+                ):"Criar Conta"
+            }
+            </Button>
           </form>
         </CardContent>
 
