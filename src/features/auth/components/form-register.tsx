@@ -218,7 +218,7 @@ function FormRegister() {
           </span>
         ) : (
           'Criar conta'
-        )}
+          )}
       </Button>
     </form>
   )

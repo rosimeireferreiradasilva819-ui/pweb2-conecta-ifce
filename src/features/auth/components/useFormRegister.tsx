@@ -6,6 +6,8 @@ import {
   registerSchema,
   type RegisterFormData,
 } from '../schemas/register.schema'
+import { http } from '@/infra/http/http-client'
+import { setAccessToken } from '../storage/auth.stoage'
 
 export function useFormRegister() {
   const [showPass, setShowPass] = useState<boolean>(false)
@@ -20,13 +22,14 @@ export function useFormRegister() {
 
   useEffect(() => {
     async function fetchCampuses() {
-      const response = await fetch(
-        'https://conectaifce-api.proflucasmendes.com.br/campuses',
-      )
-      if (response.ok){
-        const data = await response.json()
-        setCampuses(data)
+      try {
+        const campuses = await http.get<Array<{id: string; name: string}>>('campuses')
+      setCampuses(campuses)
+
+      } catch(error) {
+        console.error(error)
       }
+
     }
     fetchCampuses()
   },[])
@@ -46,27 +49,16 @@ const onSubmit = async (data: RegisterFormData) => {
   const { course, ...rest } = data
   const payload = data.role === 'student' ? data : rest
 
-  const response = await fetch(
-    'https://conectaifce-api.proflucasmendes.com.br/auth/register',
-    {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(payload),
-    },
-  )
-
-  if (!response.ok) {
-    setRegisterError('Erro ao registrar')
-    return
+  try {
+    const responseData = await http.post<{ token: string, user: any}> ('auth/register', payload)
+    setAccessToken(responseData.token)
+    navigate('/feed')
+  } catch (error) {
+    console.log(error)
   }
 
-  // ✅ redireciona pro feed
-  navigate('/feed')
-}
-
-  return {
+  }
+   return {
     state: {
       showPass,
       setShowPass,
