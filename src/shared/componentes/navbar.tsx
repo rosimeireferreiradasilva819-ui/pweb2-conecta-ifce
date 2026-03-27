@@ -1,6 +1,6 @@
-import Brand from "@/components/shared/brand"
-import { Button } from "@/components/ui/button"
+import { Button } from "@/shared/componentes/ui/button"
 import { Link } from "react-router"
+import Brand from "./brand"
 
 
 function Navbar() {

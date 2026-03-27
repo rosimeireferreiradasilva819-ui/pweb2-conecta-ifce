@@ -12,8 +12,7 @@ export const registerSchema = z.object({
     .min(3, 'O nome de usuário deve conter no mínimo 3 caracteres')
     .regex(/^[a-zA-Z0-9_]+$/, 'O nome de usuário só pode conterletras, números e underscores'),
   email:z
-    .email('Email inválido ')
-    .endsWith('@ifce.edu.br', 'Use seu email institucional'),
+    .email('Email inválido '),
   role:z.enum(['student', 'professor', 'technician']),
   campus:z.string().nonempty(),
   course: z.string().trim().min(3, 'O nome do curso deve conter no mínimo 3 caracteres').optional(),

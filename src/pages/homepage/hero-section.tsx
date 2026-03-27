@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/shared/componentes/ui/button'
 import { ArrowRight, Sparkles } from 'lucide-react'
 
 function HeroSection() {

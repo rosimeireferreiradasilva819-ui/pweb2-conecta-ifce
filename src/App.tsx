@@ -1,10 +1,11 @@
-import Footer from '@/components/shared/footer'
-import Navbar from '@/components/shared/navbar'
-import HomePage from '@/pages/HomePage'
+
+import HomePage from '@/pages/homepage/HomePage'
 import LoginPage from './pages/LoginPage'
 import RegisterPage from './pages/RegisterPage'
 import { Outlet, useLocation } from 'react-router'
-import useScrool from './hooks/useScrool'
+import useScrool from './shared/hooks/useScrool'
+import Navbar from './shared/componentes/navbar'
+import Footer from './shared/componentes/footer'
 
 function App() {
 
