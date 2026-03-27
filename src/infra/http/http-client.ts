@@ -11,6 +11,7 @@ export const http = {
     if (response.ok) {
       return (await response.json()) as ResponseType
     }
+    console.log(await response.json())
 
     throw new Error('Erro ao buscar dados.')
   },

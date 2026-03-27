@@ -18,10 +18,11 @@ function LoginPage() {
   const [email, setEmail] = useState<string>('')
   const [password, setPassword] = useState<string>('')
   const [iscarregado, setIscarregado] = useState<boolean>(false)
+  const [authError, setAuthError] = useState<string | null>(null) 
 
-
-  const handleSubmit = async (event: React.SubmitEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     setIscarregado(true)
+    setAuthError(null)
     event.preventDefault()
 
     const response = await fetch(
@@ -37,10 +38,15 @@ function LoginPage() {
         }),
       },
     )
+
     const data = await response.json()
+
     if (response.status === 200) {
       localStorage.setItem('token_access', data.token)
+    } else {
+      setAuthError('E-mail ou senha inválidos') // ✅ ADICIONADO
     }
+
     console.log(data)
     setIscarregado(false)
   }
@@ -117,19 +123,25 @@ function LoginPage() {
                   )}
                 </button>
               </div>
+
+
+              {authError && (
+                <p className="text-red-500 text-sm mt-1">
+                  {authError}
+                </p>
+              )}
             </div>
 
             <Button type="submit" className="mt-2 h-11" disabled={iscarregado}>
               {iscarregado ? (
-              <>
-                <Loader2Icon className="animate-spin" />
-                <span>Entrando...</span>{' '}
-              </>
-            ) : (
-              'Entrar'
-            )}
+                <>
+                  <Loader2Icon className="animate-spin" />
+                  <span>Entrando...</span>{' '}
+                </>
+              ) : (
+                'Entrar'
+              )}
             </Button>
-
           </form>
         </CardContent>
 
