@@ -37,7 +37,6 @@ export function useFormLogin() {
       if (error instanceof ApiError) {
         setAuthError('E-mail ou senha inválidos')
       }
-      console.error(error)
     }
   }
 

@@ -8,6 +8,7 @@ import {
 } from '../schemas/register.schema'
 import { http } from '@/infra/http/http-client'
 import { setAccessToken } from '../storage/auth.stoage'
+import { ApiError } from '@/infra/http/api-error'
 
 export function useFormRegister() {
   const [showPass, setShowPass] = useState<boolean>(false)
@@ -27,7 +28,7 @@ export function useFormRegister() {
       setCampuses(campuses)
 
       } catch(error) {
-        console.error(error)
+        console.error(error)                  
       }
 
     }
@@ -54,10 +55,12 @@ const onSubmit = async (data: RegisterFormData) => {
     setAccessToken(responseData.token)
     navigate('/feed')
   } catch (error) {
-    console.log(error)
+    if (error instanceof ApiError) {
+      setRegisterError(error.message)
+    }
   }
 
-  }
+}
    return {
     state: {
       showPass,
