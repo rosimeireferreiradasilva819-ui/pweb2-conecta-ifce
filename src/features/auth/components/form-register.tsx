@@ -13,7 +13,6 @@ import { Controller, useForm } from 'react-hook-form'
 import { useFormRegister } from './useFormRegister'
 
 function FormRegister() {
-
   const { state, onSubmit, useForm } = useFormRegister()
 
   return (
@@ -106,9 +105,9 @@ function FormRegister() {
                 <SelectValue placeholder="Selecione seu vínculo com IFCE" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="student">Estudante</SelectItem>
-                <SelectItem value="professor">Docente</SelectItem>
-                <SelectItem value="technician">Técnico(a)</SelectItem>
+                <SelectItem value="STUDENT">Estudante</SelectItem>
+                <SelectItem value="PROFESSOR">Docente</SelectItem>
+                <SelectItem value="TECHNICIAN">Técnico(a)</SelectItem>
               </SelectContent>
             </Select>
           )}
@@ -150,7 +149,7 @@ function FormRegister() {
         )}
       </div>
 
-      {useForm.watch('role') === 'student' && (
+      {useForm.watch('role') === 'STUDENT' && (
         <div className="flex flex-col gap-2">
           <Label htmlFor="handle" className="text-foreground">
             Curso
@@ -218,13 +217,11 @@ function FormRegister() {
           </span>
         ) : (
           'Criar conta'
-          )}
-      </Button>
-        {state.registerError && (
-          <p className="text-xs text-destructive">
-            {state.registerError}
-          </p>
         )}
+      </Button>
+      {state.registerError && (
+        <p className="text-xs text-destructive">{state.registerError}</p>
+      )}
     </form>
   )
 }

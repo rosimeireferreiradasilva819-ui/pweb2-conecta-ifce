@@ -1,83 +1,54 @@
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
-import {
-  registerSchema,
-  type RegisterFormData,
-} from '../schemas/register.schema'
 import { http } from '@/infra/http/http-client'
 import { setAccessToken } from '../storages/token.stoage'
+import { LoginSchema, type LoginFormData } from '../schemas/login.schema'
 import { ApiError } from '@/infra/http/api-error'
+import { login } from '../services/login.services'
+import { useAuth } from '../contexts/AuthContext'
 
-export function useFormRegister() {
+export function useFormLogin() {
   const [showPass, setShowPass] = useState<boolean>(false)
-  const [registerError, setRegisterError] = useState<string | null>(null)
-  const [campuses, setCampuses] = useState<
-    Array<{
-      id: string
-      name: string
-    }>
-  >([])
+  const [authError, setAuthError] = useState<string | null>(null)
   const navigate = useNavigate()
+  const { setAuthUser } = useAuth()
 
-  useEffect(() => {
-    async function fetchCampuses() {
-      try {
-        const campuses = await http.get<Array<{id: string; name: string}>>('campuses')
-      setCampuses(campuses)
-
-      } catch(error) {
-        console.error(error)
-      }
-
-    }
-    fetchCampuses()
-  },[])
   const {
     register,
     handleSubmit,
-    control,
     formState: { errors, isSubmitting, isValid },
-    watch,
-  } = useForm<RegisterFormData>({
-    resolver: zodResolver(registerSchema),
+  } = useForm<LoginFormData>({
+    resolver: zodResolver(LoginSchema),
     mode: 'onBlur',
   })
 
-
-const onSubmit = async (data: RegisterFormData) => {
-  const { course, ...rest } = data
-  const payload = data.role === 'student' ? data : rest
-
-  try {
-    const responseData = await http.post<{ token: string, user: any}> ('auth/register', payload)
-    setAccessToken(responseData.token)
-    navigate('/feed')
-  } catch (error) {
-    if (error instanceof ApiError) {
-      setRegisterError(error.message)
+  const onSubmit = async (data: LoginFormData) => {
+    try {
+      const responseData = await login(data.email, data.password)
+      setAuthUser(responseData.user)
+      navigate('/feed')
+    } catch (error) {
+      if (error instanceof ApiError) {
+        setAuthError(error.message)
+      }
     }
   }
 
-}
-   return {
+  return {
     state: {
       showPass,
+      authError,
       setShowPass,
-      registerError,
-      campuses,
     },
     onSubmit,
     useForm: {
       register,
       handleSubmit,
-      control,
       isSubmitting,
       isValid,
       errors,
-      watch,
     },
   }
 }
-
