@@ -1,5 +1,5 @@
 import { http } from '@/infra/http/http-client'
-import { setAccessToken } from '../storage/auth.stoage'
+import { setAccessToken } from '../storages/token.stoage'
 type CampusType = {
   id: string
   name: string

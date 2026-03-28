@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useNavigate } from 'react-router-dom'
 import { http } from '@/infra/http/http-client'
 import { LoginSchema, type LoginFormData } from '../schemas/login.schema'
-import { setAccessToken } from '../storage/auth.stoage'
+import { setAccessToken } from '../storages/token.stoage'
 import { ApiError } from '@/infra/http/api-error'
 
 export function useFormLogin() {

@@ -7,7 +7,7 @@ import {
   type RegisterFormData,
 } from '../schemas/register.schema'
 import { http } from '@/infra/http/http-client'
-import { setAccessToken } from '../storage/auth.stoage'
+import { setAccessToken } from '../storages/token.stoage'
 import { ApiError } from '@/infra/http/api-error'
 
 export function useFormRegister() {
@@ -28,7 +28,7 @@ export function useFormRegister() {
       setCampuses(campuses)
 
       } catch(error) {
-        console.error(error)                  
+        console.error(error)
       }
 
     }
